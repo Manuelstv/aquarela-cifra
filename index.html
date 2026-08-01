@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1b6ca8">
-<title>Aquarela — Toquinho · Grade de acordes</title>
+<title>Aquarela — Toquinho · Cifra limpa</title>
 <style>
   :root{
     --bg:#fbf9f4; --card:#ffffff; --ink:#1e2430; --muted:#6b7280; --line:#e7e2d8;
     --accent:#1b6ca8; --accent2:#d97706; --accent3:#0f766e; --chip:#eef4f9;
     --shadow:0 1px 2px rgba(20,30,50,.06), 0 8px 24px rgba(20,30,50,.06);
-    --fs:1rem;
+    --fs:1rem; --cfs:1rem;
   }
-  :root[data-theme="dark"], html.dark{
+  :root[data-theme="dark"]{
     --bg:#11151c; --card:#171d26; --ink:#e8eaf0; --muted:#9aa3b2; --line:#2a3340;
     --accent:#63b3ed; --accent2:#f0b429; --accent3:#5eead4; --chip:#1e2733;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
@@ -31,22 +31,19 @@
     font:var(--fs)/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     -webkit-text-size-adjust:100%;
   }
-  .wrap{max-width:960px;margin:0 auto;padding:0 16px 72px}
+  .wrap{max-width:980px;margin:0 auto;padding:0 16px 72px}
 
-  /* ---------- header ---------- */
   header.hero{
     background:linear-gradient(135deg,#1b6ca8 0%,#0f766e 45%,#d97706 100%);
     color:#fff; padding:28px 16px 22px; margin-bottom:18px;
   }
-  .hero-in{max-width:960px;margin:0 auto}
+  .hero-in{max-width:980px;margin:0 auto}
   .hero h1{margin:0;font-size:clamp(1.9rem,6vw,2.8rem);line-height:1.1;letter-spacing:-.02em}
   .hero .sub{opacity:.92;margin-top:4px;font-size:1.05rem}
   .facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
   .fact{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);
     padding:5px 11px;border-radius:999px;font-size:.85rem;white-space:nowrap}
-  .fact b{font-weight:700}
 
-  /* ---------- toolbar ---------- */
   .toolbar{
     position:sticky;top:0;z-index:20;background:var(--card);border:1px solid var(--line);
     border-radius:14px;box-shadow:var(--shadow);padding:10px;margin:-34px 0 22px;
@@ -61,11 +58,11 @@
   }
   button:active{transform:translateY(1px)}
   button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  button.ghost{background:transparent}
   .key-now{font-weight:700;font-variant-numeric:tabular-nums;min-width:2.6em;text-align:center}
   .capo-note{font-size:.85rem;color:var(--accent2);width:100%;display:none}
   .capo-note.show{display:block}
 
-  /* ---------- cards ---------- */
   section.card{
     background:var(--card);border:1px solid var(--line);border-radius:16px;
     box-shadow:var(--shadow);padding:18px 18px 20px;margin:0 0 18px;
@@ -76,87 +73,80 @@
   p{margin:0 0 12px}
   .lead{color:var(--muted)}
 
-  /* ---------- chord grid ---------- */
-  .sec{margin:0 0 20px}
-  .sec-name{
-    font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--accent);margin-bottom:7px;display:flex;align-items:baseline;gap:10px;
+  /* ---------- cifra colada (monoespaçada, alinhamento preservado) ---------- */
+  #cifra{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:var(--cfs); line-height:1.45; white-space:pre;
+    overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0;
   }
-  .sec-name .rep{color:var(--muted);font-weight:600;letter-spacing:.02em;text-transform:none;font-size:.82rem}
-  .line{
-    display:flex;flex-wrap:wrap;gap:0;border-left:3px solid var(--line);
-    border-radius:3px;margin-bottom:7px;
+  #cifra .sec{
+    display:block;font-family:inherit;font-weight:700;color:var(--accent2);
+    margin:1.4em 0 .35em;letter-spacing:.02em;
   }
-  .bar{
-    flex:1 1 5.5em;min-width:5.5em;padding:9px 6px;text-align:center;
-    border-right:1px solid var(--line);
-  }
-  .bar:first-child{border-left:0}
-  .ch{
-    font-weight:700;font-size:1.45rem;letter-spacing:-.01em;color:var(--ink);
-    font-variant-ligatures:none;
-  }
-  .ch sup{font-size:.62em;font-weight:700}
-  .ch .bass{color:var(--accent3)}
-  .line.hl{border-left-color:var(--accent2);background:linear-gradient(90deg,rgba(217,119,6,.07),transparent 65%)}
-  .note-inline{font-size:.88rem;color:var(--muted);margin:2px 0 10px}
+  #cifra .sec:first-child{margin-top:0}
+  #cifra .ch{display:block;font-weight:700;color:var(--accent)}
+  #cifra .ch .bass{color:var(--accent3)}
+  #cifra .tx{display:block}
+  #cifra .bl{display:block;height:.75em}
 
-  /* ---------- modo cifra + letra (ChordPro) ---------- */
-  .lyr-line{margin:0 0 6px;line-height:1.25}
-  .lyr-line.blank{height:.7em}
-  .unit{display:inline-block;vertical-align:bottom;white-space:pre}
-  .unit .uc{
-    display:block;font-weight:700;color:var(--accent);font-size:.9em;
-    line-height:1.35;min-height:1.35em;letter-spacing:-.01em;
+  .pastebox textarea{
+    width:100%;min-height:190px;padding:12px;border-radius:12px;border:1px solid var(--line);
+    background:var(--bg);color:var(--ink);font-family:ui-monospace,Menlo,monospace;
+    font-size:.85rem;line-height:1.4;resize:vertical;
   }
-  .unit .uc .bass{color:var(--accent3)}
-  .unit .ut{display:block;line-height:1.45}
-  .lyr-line.chords-only .ut{display:none}
-  .lyr-sec{margin:0 0 20px}
-  .empty-hint{
-    border:1px dashed var(--line);border-radius:12px;padding:14px 16px;
-    color:var(--muted);font-size:.93rem;
+  .steps{counter-reset:s;list-style:none;padding:0;margin:0 0 14px}
+  .steps li{counter-increment:s;position:relative;padding-left:2.1em;margin-bottom:8px}
+  .steps li::before{
+    content:counter(s);position:absolute;left:0;top:.1em;width:1.5em;height:1.5em;
+    background:var(--accent);color:#fff;border-radius:50%;font-size:.8rem;font-weight:700;
+    display:grid;place-items:center;
   }
-  .empty-hint code{display:inline-block;margin-top:2px}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+  .stat{font-size:.88rem;color:var(--accent3);font-weight:600}
 
-  /* ---------- chord diagrams ---------- */
   .diagrams{display:flex;flex-wrap:wrap;gap:12px}
   .dg{width:92px;text-align:center}
   .dg .nm{font-weight:700;font-size:1rem;margin-bottom:2px}
   .dg svg{display:block;margin:0 auto}
   .dg .fingers{font-size:.72rem;color:var(--muted);margin-top:2px;line-height:1.3}
+  .note-inline{font-size:.88rem;color:var(--muted);margin:10px 0 0}
 
-  /* ---------- lists / tips ---------- */
+  .sec-name{
+    font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:7px;display:flex;align-items:baseline;gap:10px;
+  }
+  .sec-name .rep{color:var(--muted);font-weight:600;letter-spacing:.02em;text-transform:none;font-size:.82rem}
+  .gline{display:flex;flex-wrap:wrap;border-left:3px solid var(--line);border-radius:3px;margin-bottom:7px}
+  .gline.hl{border-left-color:var(--accent2);background:linear-gradient(90deg,rgba(217,119,6,.07),transparent 65%)}
+  .bar{flex:1 1 5.5em;min-width:5.5em;padding:9px 6px;text-align:center;border-right:1px solid var(--line)}
+  .bar .c{font-weight:700;font-size:1.35rem}
+  .bar .c sup{font-size:.62em}
+  .bar .c .bass{color:var(--accent3)}
+  .gsec{margin-bottom:20px}
+
   ul,ol{margin:0 0 12px;padding-left:1.25em}
   li{margin:0 0 7px}
-  .tip{
-    border-left:4px solid var(--accent3);background:var(--chip);
-    padding:12px 14px;border-radius:0 10px 10px 0;margin:0 0 14px;
-  }
+  .tip{border-left:4px solid var(--accent3);background:var(--chip);padding:12px 14px;
+    border-radius:0 10px 10px 0;margin:0 0 14px}
   .tip b{color:var(--accent3)}
   .why{font-size:.92rem;color:var(--muted);margin-top:4px}
   table{width:100%;border-collapse:collapse;font-size:.94rem;margin:0 0 14px}
-  th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
   th{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
-  code{
-    background:var(--chip);padding:1px 6px;border-radius:6px;
-    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;
-  }
-  a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+  code{background:var(--chip);padding:1px 6px;border-radius:6px;
+    font-family:ui-monospace,Menlo,monospace;font-size:.9em}
+  a{color:var(--accent);text-underline-offset:2px}
   .links{list-style:none;padding:0}
   .links li{margin:0 0 10px}
   .links a{font-weight:600}
   .links .d{display:block;font-size:.88rem;color:var(--muted);font-weight:400}
-  .warn{
-    border:1px dashed var(--line);border-radius:12px;padding:12px 14px;
-    font-size:.92rem;color:var(--muted);background:transparent;
-  }
-  footer{text-align:center;color:var(--muted);font-size:.85rem;padding:8px 0 0}
   .overflow{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  footer{text-align:center;color:var(--muted);font-size:.85rem;padding:8px 0 0}
   @media print{
     .toolbar,header.hero,.no-print{display:none}
     section.card{box-shadow:none;border:0;page-break-inside:avoid;padding:0;margin-bottom:14px}
     body{background:#fff}
+    #cifra{font-size:10pt}
   }
 </style>
 </head>
@@ -172,7 +162,6 @@
       <span class="fact">Afinação padrão <b>E A D G B E</b></span>
       <span class="fact">Compasso <b>4/4</b></span>
       <span class="fact">~72–80 BPM</span>
-      <span class="fact">Nível: <b>iniciante+</b></span>
     </div>
   </div>
 </header>
@@ -181,6 +170,11 @@
 
   <div class="toolbar">
     <div class="grp">
+      <span class="lbl">Ver</span>
+      <button id="mCifra" class="on">Cifra</button>
+      <button id="mGrade">Grade</button>
+    </div>
+    <div class="grp">
       <span class="lbl">Tom</span>
       <button id="down" aria-label="Baixar meio tom">−</button>
       <span class="key-now" id="keyNow">G</span>
@@ -188,211 +182,167 @@
       <button id="reset" title="Voltar ao original">↺</button>
     </div>
     <div class="grp">
-      <span class="lbl">Modo</span>
-      <button id="modeGrid" class="on">Grade</button>
-      <button id="modeLyr">Cifra + letra</button>
-    </div>
-    <div class="grp">
       <span class="lbl">Fonte</span>
-      <button id="fsDown" aria-label="Diminuir fonte">A−</button>
-      <button id="fsUp" aria-label="Aumentar fonte">A+</button>
+      <button id="fsDown">A−</button>
+      <button id="fsUp">A+</button>
     </div>
     <div class="grp">
-      <button id="theme">🌗 Tema</button>
-      <button id="awake" title="Impede a tela de apagar">☀️ Tela ligada</button>
+      <button id="theme">🌗</button>
+      <button id="awake" title="Impede a tela de apagar">☀️ Tela</button>
     </div>
     <div class="capo-note" id="capoNote"></div>
   </div>
 
-  <section class="card">
-    <h2><span class="dot"></span>Grade de acordes</h2>
-    <p class="lead" id="chartLead">Cada bloco separado por linha vertical é <b>1 compasso</b> (4 tempos). Só a harmonia — sem tablatura de dedilhado atravessando, pra você ler a música inteira de cima a baixo.</p>
-    <div id="chart"></div>
-    <div id="lyrics" hidden></div>
-    <div class="warn" id="warnBox">
-      A letra não vem preenchida aqui. Para incluí-la, edite o arquivo <code>letra.js</code> (as instruções estão no topo dele)
-      e alterne para o modo <b>Cifra + letra</b>. A letra oficial está no
-      <a href="https://www.cifraclub.com.br/toquinho/aquarela/" target="_blank" rel="noopener">Cifra Club</a>.
+  <!-- ============ CIFRA ============ -->
+  <section class="card" id="cardCifra">
+    <h2><span class="dot"></span>Cifra <span id="cifraBadge" class="stat"></span></h2>
+
+    <div class="pastebox" id="pasteBox">
+      <p class="lead">Esta página <b>limpa o dedilhado sozinha</b>. Você cola a cifra crua do Cifra Club e ela devolve só acordes + letra, do começo ao fim, sem tablatura cortando a leitura.</p>
+      <ol class="steps">
+        <li>Abra a <a href="https://www.cifraclub.com.br/toquinho/aquarela/" target="_blank" rel="noopener">página da música no Cifra Club</a>.</li>
+        <li>Selecione a cifra inteira e <b>Ctrl+C</b> (no tablet: segure e "selecionar tudo" → copiar).</li>
+        <li><b>Ctrl+V</b> na caixa abaixo e toque em <b>Limpar e montar</b>.</li>
+      </ol>
+      <textarea id="raw" placeholder="Cole aqui o texto copiado do Cifra Club…&#10;&#10;Tom: G&#10;&#10;[Intro] G  G/B  C  C/D&#10;&#10;[Dedilhado - Intro]&#10;Parte 1 de 2&#10;E|--------------|&#10;..."></textarea>
+      <div class="row">
+        <button id="build" class="on">Limpar e montar</button>
+        <button id="demo" class="ghost">Colar da área de transferência</button>
+        <span class="stat" id="buildStat"></span>
+      </div>
+      <p class="note-inline">Fica salvo <b>neste aparelho</b> (localStorage) — na próxima vez abre já montada. Nada é enviado pra lugar nenhum.</p>
     </div>
+
+    <pre id="cifra" hidden></pre>
+    <div class="row" id="cifraActions" hidden>
+      <button id="edit" class="ghost">Colar outra cifra</button>
+      <button id="dl" class="ghost">Baixar cifra.txt</button>
+      <button id="clear" class="ghost">Apagar</button>
+    </div>
+  </section>
+
+  <!-- ============ GRADE ============ -->
+  <section class="card" id="cardGrade" hidden>
+    <h2><span class="dot"></span>Grade de acordes</h2>
+    <p class="lead">Só a harmonia, 1 compasso por bloco. Útil pra decorar a estrutura sem depender da letra.</p>
+    <div id="chart"></div>
   </section>
 
   <section class="card">
     <h2><span class="dot" style="background:var(--accent3)"></span>Os 11 acordes, com digitação</h2>
-    <p class="lead">Números = casa. <code>0</code> corda solta, <code>×</code> corda que não soa. Leitura da esquerda (mi grave) para a direita (mi agudo).</p>
+    <p class="lead">Números = casa. <code>0</code> corda solta, <code>×</code> corda que não soa. Da esquerda (mi grave) para a direita (mi agudo).</p>
     <div class="diagrams" id="diagrams"></div>
     <p class="note-inline" id="dgNote"></p>
   </section>
 
   <section class="card">
     <h2><span class="dot" style="background:var(--accent2)"></span>O segredo da música: a escada do baixo</h2>
-    <p>Imagine que sua mão esquerda é uma pessoa parada numa escada rolante. <b>Ela quase não se mexe</b> — quem anda é só o pé de baixo, descendo ou subindo um degrau por vez. É exatamente isso que acontece em Aquarela.</p>
+    <p>Imagine sua mão esquerda como uma pessoa parada numa escada rolante. <b>Ela quase não se mexe</b> — quem anda é só o pé de baixo, um degrau por vez. É exatamente isso que acontece em Aquarela.</p>
     <div class="tip">
       <b>Na estrofe o baixo SOBE:</b> G → G/B → C → C/D é a nota grave andando <b>Sol → Si → Dó → Ré</b>.
-      <div class="why">A mão fica praticamente na mesma posição; você só troca qual corda grave ataca.</div>
+      <div class="why">A mão fica praticamente na mesma posição; muda qual corda grave você ataca.</div>
     </div>
     <div class="tip">
       <b>No refrão o baixo DESCE:</b> G → D/F# → C/E → C/D é <b>Sol → Fá# → Mi → Ré</b>.
-      <div class="why">Sobe na estrofe, desce no refrão. Essa simetria é o que dá a sensação de "aquarela escorrendo".</div>
+      <div class="why">Sobe na estrofe, desce no refrão. Essa simetria é o que dá a sensação de aquarela escorrendo.</div>
     </div>
-    <p>Sacar isso muda tudo na hora de decorar: em vez de 11 acordes soltos, você memoriza <b>duas escadinhas</b>, uma subindo e uma descendo.</p>
+    <p>Sacando isso, você para de decorar 11 acordes soltos e passa a decorar <b>duas escadinhas</b>.</p>
   </section>
 
   <section class="card">
     <h2><span class="dot" style="background:var(--accent2)"></span>Como trocar acordes mais rápido</h2>
 
     <h3>1. Dedo-âncora: nunca levante o dedo que já está certo</h3>
-    <p>É como trocar de marcha sem tirar a mão do câmbio. Nas trocas dessa música quase sempre sobra um dedo no lugar:</p>
+    <p>É como trocar de marcha sem tirar a mão do câmbio. Aqui quase sempre sobra dedo no lugar:</p>
     <div class="overflow">
     <table>
       <tr><th>Troca</th><th>O que fazer</th><th>Dedo que fica</th></tr>
-      <tr><td><b>G → G/B</b></td><td>Não mexe nada. Só ataque a partir da 5ª corda</td><td>todos</td></tr>
-      <tr><td><b>C → C/D</b></td><td>Solte os dedos das cordas graves, mantenha o indicador</td><td>indicador (2ª corda, casa 1)</td></tr>
-      <tr><td><b>C → C/E</b></td><td>Mesma forma do C, só deixe a 6ª corda soar solta</td><td>todos</td></tr>
+      <tr><td><b>G → G/B</b></td><td>Não mexe nada; só ataque a partir da 5ª corda</td><td>todos</td></tr>
+      <tr><td><b>C → C/D</b></td><td>Solte os dedos das cordas graves</td><td>indicador (2ª corda, casa 1)</td></tr>
+      <tr><td><b>C → C/E</b></td><td>Mesma forma do C, deixe a 6ª soar solta</td><td>todos</td></tr>
       <tr><td><b>Em → Em/D</b></td><td>Tire os dois dedos e ataque da 4ª corda</td><td>—</td></tr>
       <tr><td><b>C → F7M</b></td><td>Escorregue a forma; mínimo e anelar saem</td><td>indicador e médio</td></tr>
-      <tr><td><b>Em → A7</b></td><td>Mesmo desenho, uma corda pra baixo</td><td>forma inteira</td></tr>
+      <tr><td><b>Em → A7</b></td><td>Mesmo desenho, uma corda pra baixo</td><td>a forma inteira</td></tr>
     </table>
     </div>
 
     <h3>2. Troque no ar, não no tempo</h3>
-    <p>O erro clássico é esperar a batida chegar pra começar a mudar. Faça o contrário: <b>levante a mão meio tempo antes</b> do fim do compasso. O ouvinte não escuta o buraquinho; ele escuta a pausa se você chegar atrasado.</p>
+    <p>O erro clássico é esperar a batida chegar pra começar a mudar. Faça o contrário: <b>levante a mão meio tempo antes</b> do fim do compasso. Ninguém escuta o buraquinho; todo mundo escuta o atraso.</p>
 
     <h3>3. Exercício do metrônomo lento (o mais eficaz)</h3>
     <ol>
-      <li>Metrônomo em <b>50 BPM</b>. Toque só <b>G no tempo 1</b> e <b>C no tempo 3</b>. Nada mais.</li>
-      <li>Só suba pra 60 quando fizer 8 vezes seguidas sem falhar. Depois 70, 80…</li>
-      <li>Repita para cada par difícil isolado: <code>C/D → G</code>, <code>B7 → Em</code>, <code>Em → A7</code>.</li>
+      <li><b>50 BPM</b>. Toque só <b>G no tempo 1</b> e <b>C no tempo 3</b>. Nada mais.</li>
+      <li>Só suba pra 60 depois de 8 acertos seguidos. Depois 70, 80…</li>
+      <li>Repita isolando cada par difícil: <code>C/D → G</code>, <code>B7 → Em</code>, <code>Em → A7</code>.</li>
     </ol>
-    <p class="why">Velocidade não se treina tocando rápido — se treina tocando devagar sem erro e subindo o metrônomo. Errar rápido só ensina o erro.</p>
+    <p class="why">Velocidade não se treina tocando rápido — se treina tocando devagar sem errar e subindo o metrônomo. Errar rápido só ensina o erro.</p>
 
     <h3>4. Mão de aranha</h3>
-    <p>Mantenha os dedos <b>curvados e a 1 cm das cordas</b> o tempo todo. Dedo esticado longe do braço é distância extra a percorrer em cada troca — é a diferença entre estar sentado na cadeira ou já de pé quando te chamam.</p>
+    <p>Dedos <b>curvados e a 1 cm das cordas</b> o tempo todo. Dedo esticado longe do braço é distância extra em cada troca — é a diferença entre estar sentado ou já de pé quando te chamam.</p>
 
-    <h3>5. B7 é o vilão — ataque ele sozinho</h3>
-    <p>Na música inteira ele aparece pouco (só na virada do refrão), mas é o acorde de 4 dedos. Trate <code>G → B7 → Em</code> como um exercício separado, 20 repetições por dia, antes de tocar a música completa.</p>
+    <h3>5. B7 é o vilão — treine ele sozinho</h3>
+    <p>Aparece pouco (só na virada do refrão), mas é o único de 4 dedos. Trate <code>G → B7 → Em</code> como exercício separado, 20 repetições antes de tocar a música inteira.</p>
 
     <h3>Se você é bem iniciante</h3>
     <ul>
-      <li><b>Simplifique os baixos.</b> Toque <code>G · G · C · C</code> no lugar de <code>G · G/B · C · C/D</code>. A música continua reconhecível e você já toca ela hoje. Depois adiciona os baixos um por vez.</li>
-      <li><b>Comece só com a estrofe.</b> São 4 compassos que se repetem — 80% da música.</li>
-      <li><b>Ritmo mínimo que funciona:</b> uma batida pra baixo em cada tempo (4 por compasso). Feio é parar, não é ser simples.</li>
+      <li><b>Simplifique os baixos:</b> toque <code>G · G · C · C</code> no lugar de <code>G · G/B · C · C/D</code>. Continua reconhecível e você toca hoje. Depois acrescenta um baixo por vez.</li>
+      <li><b>Comece só pela estrofe:</b> 4 compassos que se repetem = 80% da música.</li>
+      <li><b>Ritmo mínimo que funciona:</b> uma batida pra baixo em cada tempo. Feio é parar, não é ser simples.</li>
     </ul>
   </section>
 
   <section class="card">
-    <h2><span class="dot" style="background:var(--accent3)"></span>Ritmo e dedilhado (opcional, fora da grade)</h2>
-    <p>Aquarela é normalmente tocada <b>dedilhada</b>, mas você não precisa disso pra ela soar bem.</p>
+    <h2><span class="dot" style="background:var(--accent3)"></span>Ritmo e dedilhado</h2>
+    <p>Aquarela é normalmente dedilhada, mas não precisa disso pra soar bem.</p>
+    <div class="tip"><b>Nível 1 — batida simples:</b> ↓ ↓ ↓ ↓ (uma por tempo, mão solta)</div>
+    <div class="tip"><b>Nível 2 — balanço:</b> ↓ · ↓↑ · ↑ ↓↑ &nbsp;(o "baixo-em-cima" clássico da MPB)</div>
     <div class="tip">
-      <b>Nível 1 — batida simples:</b> ↓ ↓ ↓ ↓ (uma por tempo, mão solta)
-    </div>
-    <div class="tip">
-      <b>Nível 2 — balanço:</b> ↓ · ↓↑ · ↑ ↓↑ &nbsp; (o clássico "baixo-em-cima" da MPB)
-    </div>
-    <div class="tip">
-      <b>Nível 3 — dedilhado:</b> polegar toca só a nota do baixo (é ela que faz a escada!) e indicador/médio/anelar tocam as 3 cordas finas juntas ou alternadas: <code>P — i m a — m i</code> em cada compasso.
-      <div class="why">Se você entendeu a escada do baixo, o dedilhado vira quase automático: o polegar é quem "anda" na escada.</div>
+      <b>Nível 3 — dedilhado:</b> polegar toca só a nota do baixo (é ela que faz a escada!) e indicador/médio/anelar tocam as três cordas finas: <code>P — i m a — m i</code> por compasso.
+      <div class="why">Se você entendeu a escada do baixo, o dedilhado sai quase sozinho: o polegar é quem anda na escada. A tablatura completa está no Cifra Club — aqui ela fica fora do caminho de propósito.</div>
     </div>
   </section>
 
   <section class="card">
     <h2><span class="dot" style="background:var(--accent2)"></span>Curiosidades</h2>
     <ul>
-      <li><b>Ela nasceu em italiano.</b> A canção foi lançada em 1983 como <i>"Acquarello"</i>, com letra de <b>Guido Morra</b> e música de Toquinho e do italiano <b>Maurizio Fabrizio</b>. A versão em português veio depois, quando Toquinho decidiu adaptar a letra para gravar no Brasil.</li>
-      <li><b>Toquinho foi o primeiro brasileiro a receber disco de ouro na Itália</b> — graças ao sucesso estrondoso de "Acquarello" nas rádios italianas.</li>
+      <li><b>Ela nasceu em italiano.</b> Foi lançada em 1983 como <i>"Acquarello"</i>, letra de <b>Guido Morra</b>, música de Toquinho com o italiano <b>Maurizio Fabrizio</b>. A versão em português veio depois.</li>
+      <li><b>Primeiro disco de ouro de um brasileiro na Itália</b> — resultado do sucesso de "Acquarello" nas rádios italianas.</li>
       <li><b>A melodia ficou pronta em menos de 10 minutos</b>, segundo o próprio Toquinho.</li>
-      <li><b>A harmonia veio de outra música.</b> A base harmônica tem parentesco com um tema que Toquinho fez com Vinicius de Moraes em 1974 para a trilha da novela <i>Fogo Sobre Terra</i>, da TV Globo. Toquinho percebeu a semelhança e as duas ideias acabaram fundidas numa canção só.</li>
-      <li><b>Vinicius não viu o sucesso.</b> O Poetinha morreu em 1980; a canção só estourou em 1983.</li>
-      <li><b>O comercial que virou cultura.</b> Em 1983 a Faber-Castell usou Aquarela numa propaganda de lápis de cor que se tornou um dos comerciais mais icônicos da TV brasileira — reexibida e refilmada por décadas (versões em 2001, 2012, 2018…). Em 2012 já se contavam mais de 25 versões do filme com a mesma música.</li>
-      <li><b>Harmonia "de compositor, não de violonista".</b> Repare que <i>metade</i> dos acordes são inversões (<code>/B</code>, <code>/D</code>, <code>/F#</code>, <code>/E</code>) — isso é escrita pensada na linha de baixo, típica da MPB pós-bossa, e é o que faz a música parecer mais complexa do que é pra mão esquerda.</li>
+      <li><b>A harmonia veio de outra música.</b> A base tem parentesco com um tema que Toquinho fez com Vinicius em 1974 para a novela <i>Fogo Sobre Terra</i>, da Globo. Ele notou a semelhança e as duas ideias foram fundidas numa canção só.</li>
+      <li><b>Vinicius não viu o sucesso:</b> morreu em 1980; a canção estourou em 1983.</li>
+      <li><b>O comercial que virou cultura.</b> Em 1983 a Faber-Castell usou Aquarela numa propaganda de lápis de cor que virou um dos comerciais mais icônicos da TV brasileira, refilmada por décadas (2001, 2012, 2018…). Em 2012 já se contavam mais de 25 versões do filme com a mesma música.</li>
+      <li><b>Harmonia de compositor, não de violonista.</b> Metade dos acordes são inversões (<code>/B</code>, <code>/D</code>, <code>/F#</code>, <code>/E</code>) — escrita pensada na linha de baixo, típica da MPB pós-bossa. É o que faz a música <i>parecer</i> mais difícil do que é pra mão esquerda.</li>
     </ul>
   </section>
 
   <section class="card">
     <h2><span class="dot"></span>Links</h2>
     <ul class="links">
-      <li><a href="https://www.cifraclub.com.br/toquinho/aquarela/" target="_blank" rel="noopener">Cifra Club — Aquarela</a><span class="d">Cifra completa com letra, tablatura do dedilhado e player</span></li>
-      <li><a href="https://www.letras.mus.br/toquinho/49005/" target="_blank" rel="noopener">Letras.mus.br — letra completa</a><span class="d">Só a letra, pra deixar na tela ao lado</span></li>
-      <li><a href="https://www.culturagenial.com/musica-aquarela/" target="_blank" rel="noopener">Cultura Genial — análise e significado</a><span class="d">Leitura do que a letra quer dizer, verso a verso</span></li>
-      <li><a href="https://www.letras.mus.br/blog/historia-musica-aquarela/" target="_blank" rel="noopener">Letras — a história da música</a><span class="d">Como a parceria com os italianos aconteceu</span></li>
+      <li><a href="https://www.cifraclub.com.br/toquinho/aquarela/" target="_blank" rel="noopener">Cifra Club — Aquarela</a><span class="d">A fonte: cifra completa, tablatura do dedilhado e player</span></li>
+      <li><a href="https://www.letras.mus.br/toquinho/49005/" target="_blank" rel="noopener">Letras.mus.br — letra</a><span class="d">Só a letra, sem acordes</span></li>
+      <li><a href="https://www.culturagenial.com/musica-aquarela/" target="_blank" rel="noopener">Cultura Genial — análise e significado</a><span class="d">Leitura da letra verso a verso</span></li>
+      <li><a href="https://www.letras.mus.br/blog/historia-musica-aquarela/" target="_blank" rel="noopener">A história da música</a><span class="d">Como a parceria com os italianos aconteceu</span></li>
       <li><a href="https://en.wikipedia.org/wiki/Aquarela_(song)" target="_blank" rel="noopener">Wikipedia — Aquarela (song)</a><span class="d">Ficha técnica, gravações e versões</span></li>
-      <li><a href="https://www.youtube.com/results?search_query=faber+castell+aquarela+1983+comercial" target="_blank" rel="noopener">YouTube — o comercial da Faber-Castell de 1983</a><span class="d">O clássico dos lápis de cor</span></li>
-      <li><a href="https://www.youtube.com/results?search_query=toquinho+aquarela+ao+vivo" target="_blank" rel="noopener">YouTube — Toquinho tocando ao vivo</a><span class="d">Referência de andamento e de dedilhado real</span></li>
+      <li><a href="https://www.youtube.com/results?search_query=faber+castell+aquarela+1983+comercial" target="_blank" rel="noopener">O comercial da Faber-Castell (1983)</a><span class="d">O clássico dos lápis de cor</span></li>
+      <li><a href="https://www.youtube.com/results?search_query=toquinho+aquarela+ao+vivo" target="_blank" rel="noopener">Toquinho ao vivo</a><span class="d">Referência de andamento e dedilhado real</span></li>
     </ul>
   </section>
 
-  <footer>Grade de acordes montada a partir da cifra pública do Cifra Club · sem letra por respeito a direitos autorais</footer>
+  <footer>Cifra montada a partir do que você colar do Cifra Club · conteúdo guardado só no seu aparelho</footer>
 </div>
 
-<script src="letra.js"></script>
 <script>
-/* ============ dados ============ */
-const SECTIONS = [
-  {name:"Intro", rep:"2×", lines:[["G","G/B","C","C/D"]]},
-  {name:"Primeira parte (estrofe)", rep:"repete o ciclo enquanto durar a estrofe", lines:[
-    ["G","G/B","C","C/D"],
-    ["G","G/B","C","C/D"]
-  ]},
-  {name:"Pré-refrão", rep:"", hl:true, lines:[
-    ["Em","Em/D","C","F7M"],
-    ["G","G/B","C","C/D"]
-  ]},
-  {name:"Refrão", rep:"", hl:true, lines:[
-    ["G","D/F#","C/E","C/D"],
-    ["G","D/F#","C/E","C/D"],
-    ["G","B7","Em","A7","C/D"]
-  ]},
-  {name:"Segunda parte (estrofe)", rep:"igual à primeira", lines:[
-    ["G","G/B","C","C/D"],
-    ["G","G/B","C","C/D"]
-  ]},
-  {name:"Pré-refrão", rep:"igual ao primeiro", hl:true, lines:[
-    ["Em","Em/D","C","F7M"],
-    ["G","G/B","C","C/D"]
-  ]},
-  {name:"Refrão", rep:"igual ao primeiro", hl:true, lines:[
-    ["G","D/F#","C/E","C/D"],
-    ["G","D/F#","C/E","C/D"],
-    ["G","B7","Em","A7","C/D"]
-  ]},
-  {name:"Final", rep:"repete e resolve", lines:[
-    ["G","G/B","C","C/D"],
-    ["G","G/B","C","C/D"],
-    ["G"]
-  ]}
-];
-
-/* forma: [mi grave ... mi agudo], -1 = abafada */
-const SHAPES = {
-  "G":     {frets:[3,2,0,0,0,3], fing:"2-1-0-0-0-3"},
-  "G/B":   {frets:[-1,2,0,0,0,3], fing:"×-1-0-0-0-3"},
-  "C":     {frets:[-1,3,2,0,1,0], fing:"×-3-2-0-1-0"},
-  "C/D":   {frets:[-1,-1,0,0,1,0], fing:"só o indicador"},
-  "C/E":   {frets:[0,3,2,0,1,0], fing:"C com 6ª solta"},
-  "D/F#":  {frets:[2,-1,0,2,3,2], fing:"polegar na 6ª"},
-  "Em":    {frets:[0,2,2,0,0,0], fing:"0-2-3-0-0-0"},
-  "Em/D":  {frets:[-1,-1,0,0,0,0], fing:"tudo solto"},
-  "F7M":   {frets:[-1,-1,3,2,1,0], fing:"×-×-3-2-1-0"},
-  "B7":    {frets:[-1,2,1,2,0,2], fing:"×-2-1-3-0-4"},
-  "A7":    {frets:[-1,0,2,0,2,0], fing:"×-0-2-0-3-0"}
-};
-
-const NOTES  = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
-const FLATS  = {"C#":"Db","D#":"Eb","F#":"F#","G#":"Ab","A#":"Bb"};
-
-/* ============ transposição ============ */
+/* ================= transposição ================= */
+const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const FLATMAP = {"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"};
 let shift = 0;
 
 function transposeRoot(root, s){
-  let i = NOTES.indexOf(root);
-  if(i < 0){ // trata bemóis
-    const map={"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"};
-    i = NOTES.indexOf(map[root] ?? root);
-  }
-  if(i < 0) return root;
-  return NOTES[(i + s + 120) % 12];
+  let i = NOTES.indexOf(FLATMAP[root] ?? root);
+  return i < 0 ? root : NOTES[(i + s + 1200) % 12];
 }
 function transposeChord(ch, s){
-  if(s === 0) return ch;
+  if(!s) return ch;
   const [main, bass] = ch.split("/");
   const m = main.match(/^([A-G][#b]?)(.*)$/);
   if(!m) return ch;
@@ -400,177 +350,257 @@ function transposeChord(ch, s){
   if(bass) out += "/" + transposeRoot(bass, s);
   return out;
 }
-function fmtChord(ch){
+function esc(s){ return s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+function colorChord(ch){
+  const [main, bass] = ch.split("/");
+  return esc(main) + (bass ? '<span class="bass">/'+esc(bass)+'</span>' : "");
+}
+function fmtChordRich(ch){
   const [main, bass] = ch.split("/");
   const m = main.match(/^([A-G][#b]?)(.*)$/) || [null, main, ""];
-  let html = m[1] + (m[2] ? "<sup>"+m[2]+"</sup>" : "");
-  if(bass) html += '<span class="bass">/'+bass+'</span>';
-  return html;
+  let h = m[1] + (m[2] ? "<sup>"+m[2]+"</sup>" : "");
+  if(bass) h += '<span class="bass">/'+bass+'</span>';
+  return h;
 }
 
-/* ============ render grade ============ */
-function renderChart(){
-  const el = document.getElementById("chart");
-  el.innerHTML = SECTIONS.map(sec => {
-    const lines = sec.lines.map(bars =>
-      '<div class="line'+(sec.hl?' hl':'')+'">' +
-      bars.map(c => '<div class="bar"><span class="ch">'+fmtChord(transposeChord(c, shift))+'</span></div>').join("") +
-      '</div>'
-    ).join("");
-    return '<div class="sec"><div class="sec-name">'+sec.name+
-      (sec.rep?'<span class="rep">'+sec.rep+'</span>':'')+'</div>'+lines+'</div>';
+/* ================= parser do Cifra Club ================= */
+const CHORD_RE = /^[A-G][#b]?(?:(?:m|maj|M|min|dim|aug|sus|add|°|º|\+|-)?\d*)*(?:\([^)]*\))?(?:\/[A-G][#b]?)?$/;
+const TAB_RE   = /^\s*[EBGDAeb]\s*\|/;
+const PARTE_RE = /^\s*Parte\s+\d+\s+de\s+\d+\s*$/i;
+const DEDI_RE  = /^\s*\[\s*Dedilhado[^\]]*\]\s*$/i;
+const SEC_RE   = /^\s*\[[^\]]+\]/;
+
+function isChordLine(line){
+  const t = line.replace(/[()|]/g, " ").trim();
+  if(!t) return false;
+  const toks = t.split(/\s+/);
+  return toks.every(tk => CHORD_RE.test(tk));
+}
+
+/* limpa: tira tablatura, "Parte N de M" e blocos [Dedilhado] */
+function cleanCifra(raw){
+  let lines = raw.replace(/\r/g, "").split("\n");
+  const drop = new Array(lines.length).fill(false);
+  let tabsRemoved = 0;
+
+  lines.forEach((l, i) => {
+    if(TAB_RE.test(l)){ drop[i] = true; tabsRemoved++; return; }
+    if(PARTE_RE.test(l)){ drop[i] = true; return; }
+    if(DEDI_RE.test(l)){ drop[i] = true; return; }
+  });
+
+  /* a linha de acordes que rotula um bloco de tab também sai:
+     é uma chord line cuja próxima linha não-vazia é tablatura */
+  lines.forEach((l, i) => {
+    if(drop[i] || !isChordLine(l)) return;
+    for(let j = i + 1; j < lines.length; j++){
+      if(!lines[j].trim()) continue;
+      if(TAB_RE.test(lines[j])) drop[i] = true;
+      break;
+    }
+  });
+
+  let out = lines.filter((_, i) => !drop[i]);
+  /* colapsa 3+ linhas em branco em uma só e apara as pontas */
+  const res = [];
+  for(const l of out){
+    if(!l.trim() && res.length && !res[res.length-1].trim()) continue;
+    res.push(l.replace(/\s+$/, ""));
+  }
+  while(res.length && !res[0].trim()) res.shift();
+  while(res.length && !res[res.length-1].trim()) res.pop();
+  return { text: res.join("\n"), tabsRemoved };
+}
+
+/* transpõe uma linha de acordes mantendo as colunas */
+function transposeChordLine(line, s){
+  if(!s) return line;
+  let buf = "";
+  const re = /\S+/g; let m;
+  while((m = re.exec(line)) !== null){
+    const tk = m[0];
+    const nt = /^[()|]+$/.test(tk) ? tk
+             : tk.replace(/^([()|]*)(.*?)([()|]*)$/, (_,a,c,b) => a + transposeChord(c, s) + b);
+    if(buf.length < m.index) buf += " ".repeat(m.index - buf.length);
+    else if(buf.length) buf += " ";
+    buf += nt;
+  }
+  return buf;
+}
+
+function renderCifra(text){
+  return text.split("\n").map(l => {
+    if(!l.trim()) return '<span class="bl"></span>';
+    if(SEC_RE.test(l) && !isChordLine(l.replace(/^\s*\[[^\]]+\]/, "")))
+      return '<span class="sec">'+esc(l)+'</span>';
+    if(isChordLine(l)){
+      const t = transposeChordLine(l, shift);
+      return '<span class="ch">'+t.replace(/\S+/g, tk => colorChord(tk))+'</span>';
+    }
+    if(/^\s*Tom:\s*[A-G]/.test(l)){
+      const t = l.replace(/([A-G][#b]?m?)\s*$/, (x) => transposeChord(x.trim(), shift));
+      return '<span class="ch">'+esc(t)+'</span>';
+    }
+    return '<span class="tx">'+esc(l)+'</span>';
   }).join("");
 }
 
-/* ============ render diagramas ============ */
+/* ================= estado da cifra ================= */
+const KEY = "aq-cifra-v1";
+let cifraText = "";
+
+function showCifra(){
+  const has = !!cifraText.trim();
+  document.getElementById("pasteBox").hidden = has;
+  document.getElementById("cifra").hidden = !has;
+  document.getElementById("cifraActions").hidden = !has;
+  if(has) document.getElementById("cifra").innerHTML = renderCifra(cifraText);
+  document.getElementById("cifraBadge").textContent =
+    has ? "" : "— cole a sua do Cifra Club";
+}
+function saveCifra(t){
+  cifraText = t;
+  try{ t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY); }catch(e){}
+  showCifra();
+}
+
+document.getElementById("build").onclick = ()=>{
+  const raw = document.getElementById("raw").value;
+  if(!raw.trim()){ document.getElementById("buildStat").textContent = "cole algo primeiro"; return; }
+  const { text, tabsRemoved } = cleanCifra(raw);
+  saveCifra(text);
+  document.getElementById("buildStat").textContent = "";
+  document.getElementById("cifraBadge").textContent =
+    tabsRemoved ? "· "+tabsRemoved+" linhas de tablatura removidas" : "";
+};
+document.getElementById("demo").onclick = async ()=>{
+  try{
+    const t = await navigator.clipboard.readText();
+    document.getElementById("raw").value = t;
+    document.getElementById("buildStat").textContent = "colado — agora toque em Limpar e montar";
+  }catch(e){
+    document.getElementById("buildStat").textContent = "o navegador bloqueou; use Ctrl+V na caixa";
+  }
+};
+document.getElementById("edit").onclick = ()=>{
+  document.getElementById("raw").value = cifraText;
+  cifraText = ""; showCifra();
+};
+document.getElementById("clear").onclick = ()=>{ saveCifra(""); document.getElementById("raw").value = ""; };
+document.getElementById("dl").onclick = ()=>{
+  const b = new Blob([cifraText], {type:"text/plain;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(b); a.download = "aquarela-cifra.txt"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+};
+
+/* ================= grade ================= */
+const SECTIONS = [
+  {name:"Intro", rep:"2×", lines:[["G","G/B","C","C/D"]]},
+  {name:"Primeira parte", rep:"ciclo repetido", lines:[["G","G/B","C","C/D"],["G","G/B","C","C/D"]]},
+  {name:"Pré-refrão", hl:true, lines:[["Em","Em/D","C","F7M"],["G","G/B","C","C/D"]]},
+  {name:"Refrão", hl:true, lines:[["G","D/F#","C/E","C/D"],["G","D/F#","C/E","C/D"],["G","B7","Em","A7","C/D"]]},
+  {name:"Segunda parte", rep:"igual à primeira", lines:[["G","G/B","C","C/D"],["G","G/B","C","C/D"]]},
+  {name:"Pré-refrão", rep:"igual", hl:true, lines:[["Em","Em/D","C","F7M"],["G","G/B","C","C/D"]]},
+  {name:"Refrão", rep:"igual", hl:true, lines:[["G","D/F#","C/E","C/D"],["G","D/F#","C/E","C/D"],["G","B7","Em","A7","C/D"]]},
+  {name:"Final", rep:"repete e resolve", lines:[["G","G/B","C","C/D"],["G"]]}
+];
+function renderChart(){
+  document.getElementById("chart").innerHTML = SECTIONS.map(sec =>
+    '<div class="gsec"><div class="sec-name">'+sec.name+
+    (sec.rep?'<span class="rep">'+sec.rep+'</span>':'')+'</div>'+
+    sec.lines.map(bars =>
+      '<div class="gline'+(sec.hl?' hl':'')+'">'+
+      bars.map(c => '<div class="bar"><span class="c">'+fmtChordRich(transposeChord(c, shift))+'</span></div>').join("")+
+      '</div>').join("")+
+    '</div>').join("");
+}
+
+/* ================= diagramas ================= */
+const SHAPES = {
+  "G":{f:[3,2,0,0,0,3],d:"2-1-0-0-0-3"}, "G/B":{f:[-1,2,0,0,0,3],d:"×-1-0-0-0-3"},
+  "C":{f:[-1,3,2,0,1,0],d:"×-3-2-0-1-0"}, "C/D":{f:[-1,-1,0,0,1,0],d:"só o indicador"},
+  "C/E":{f:[0,3,2,0,1,0],d:"C com 6ª solta"}, "D/F#":{f:[2,-1,0,2,3,2],d:"polegar na 6ª"},
+  "Em":{f:[0,2,2,0,0,0],d:"0-2-3-0-0-0"}, "Em/D":{f:[-1,-1,0,0,0,0],d:"tudo solto"},
+  "F7M":{f:[-1,-1,3,2,1,0],d:"×-×-3-2-1-0"}, "B7":{f:[-1,2,1,2,0,2],d:"×-2-1-3-0-4"},
+  "A7":{f:[-1,0,2,0,2,0],d:"×-0-2-0-3-0"}
+};
 function diagramSVG(frets){
   const W=76,H=92,L=10,T=16,SW=11,FH=15;
   let s = '<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" aria-hidden="true">';
-  s += '<rect x="'+L+'" y="'+T+'" width="'+(SW*5)+'" height="4" fill="currentColor"/>'; // pestana
-  for(let i=0;i<6;i++)
-    s += '<line x1="'+(L+i*SW)+'" y1="'+T+'" x2="'+(L+i*SW)+'" y2="'+(T+FH*4)+'" stroke="currentColor" stroke-width="1" opacity=".55"/>';
-  for(let f=1;f<=4;f++)
-    s += '<line x1="'+L+'" y1="'+(T+f*FH)+'" x2="'+(L+SW*5)+'" y2="'+(T+f*FH)+'" stroke="currentColor" stroke-width="1" opacity=".35"/>';
+  s += '<rect x="'+L+'" y="'+T+'" width="'+(SW*5)+'" height="4" fill="currentColor"/>';
+  for(let i=0;i<6;i++) s += '<line x1="'+(L+i*SW)+'" y1="'+T+'" x2="'+(L+i*SW)+'" y2="'+(T+FH*4)+'" stroke="currentColor" stroke-width="1" opacity=".55"/>';
+  for(let f=1;f<=4;f++) s += '<line x1="'+L+'" y1="'+(T+f*FH)+'" x2="'+(L+SW*5)+'" y2="'+(T+f*FH)+'" stroke="currentColor" stroke-width="1" opacity=".35"/>';
   frets.forEach((fr,i)=>{
     const x = L + i*SW;
-    if(fr === -1)
-      s += '<text x="'+x+'" y="'+(T-4)+'" font-size="9" text-anchor="middle" fill="currentColor" opacity=".6">×</text>';
-    else if(fr === 0)
-      s += '<circle cx="'+x+'" cy="'+(T-7)+'" r="3" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".7"/>';
-    else
-      s += '<circle cx="'+x+'" cy="'+(T+fr*FH-FH/2)+'" r="4.6" fill="currentColor"/>';
+    if(fr === -1) s += '<text x="'+x+'" y="'+(T-4)+'" font-size="9" text-anchor="middle" fill="currentColor" opacity=".6">×</text>';
+    else if(fr === 0) s += '<circle cx="'+x+'" cy="'+(T-7)+'" r="3" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".7"/>';
+    else s += '<circle cx="'+x+'" cy="'+(T+fr*FH-FH/2)+'" r="4.6" fill="currentColor"/>';
   });
   return s + '</svg>';
 }
 function renderDiagrams(){
   const order = ["G","G/B","C","C/D","C/E","D/F#","Em","Em/D","F7M","B7","A7"];
-  document.getElementById("diagrams").innerHTML = order.map(n => {
-    const sh = SHAPES[n];
-    const label = shift === 0 ? n : transposeChord(n, shift);
-    return '<div class="dg"><div class="nm">'+fmtChord(label)+'</div>'+diagramSVG(sh.frets)+
-           '<div class="fingers">'+sh.fing+'</div></div>';
-  }).join("");
+  document.getElementById("diagrams").innerHTML = order.map(n =>
+    '<div class="dg"><div class="nm">'+fmtChordRich(transposeChord(n, shift))+'</div>'+
+    diagramSVG(SHAPES[n].f)+'<div class="fingers">'+SHAPES[n].d+'</div></div>').join("");
   document.getElementById("dgNote").innerHTML = shift === 0
     ? 'Formas no tom original de <b>G</b>.'
-    : '⚠️ Você transpôs. As <b>formas dos desenhos continuam as do tom de G</b> — a maneira prática de tocar no tom novo é manter estas formas e usar <b>capotraste na casa '+((shift%12)+12)%12+'</b>.';
+    : '⚠️ Tom transposto. As <b>formas continuam as de G</b> — na prática, mantenha estas formas e ponha <b>capotraste na casa '+(((shift%12)+12)%12)+'</b>.';
 }
 
-/* ============ modo cifra + letra (ChordPro) ============ */
-let mode = "grid";
-
-function esc(s){ return s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
-
-/* "[G]texto [C]mais" -> pares acorde/texto, quebrando por palavra p/ permitir wrap */
-function renderLine(raw){
-  if(!raw || !raw.trim()) return '<div class="lyr-line blank"></div>';
-
-  const tokens = [];
-  const re = /\[([^\]]+)\]/g;
-  let last = 0, m;
-  while((m = re.exec(raw)) !== null){
-    if(m.index > last) tokens.push({chord:null, text: raw.slice(last, m.index)});
-    tokens.push({chord: m[1], text: ""});
-    last = re.lastIndex;
-  }
-  if(last < raw.length) tokens.push({chord:null, text: raw.slice(last)});
-
-  /* junta cada acorde com o texto que vem logo depois */
-  const pairs = [];
-  for(const t of tokens){
-    if(t.chord !== null) pairs.push({chord: t.chord, text: ""});
-    else if(pairs.length) pairs[pairs.length-1].text += t.text;
-    else pairs.push({chord: null, text: t.text});
-  }
-
-  const hasText = pairs.some(p => p.text.trim() !== "");
-  let html = "";
-  for(const p of pairs){
-    const ch = p.chord ? fmtChord(transposeChord(p.chord, shift)) : "";
-    /* quebra o texto em palavras: só a primeira carrega o acorde */
-    const words = p.text.length ? p.text.match(/\S+\s*|\s+/g) || [] : [""];
-    words.forEach((w, i) => {
-      const c = i === 0 ? ch : "";
-      if(!c && !w) return;
-      html += '<span class="unit"><span class="uc">'+c+'</span>'+
-              '<span class="ut">'+esc(w)+'</span></span>';
-    });
-  }
-  return '<div class="lyr-line'+(hasText ? "" : " chords-only")+'">'+html+'</div>';
-}
-
-function lyricsFilled(){
-  return typeof LETRA !== "undefined" && Array.isArray(LETRA) &&
-    LETRA.some(s => (s.lines||[]).some(l => l.replace(/\[[^\]]*\]/g, "").trim() !== ""));
-}
-
-function renderLyrics(){
-  const el = document.getElementById("lyrics");
-  if(typeof LETRA === "undefined" || !Array.isArray(LETRA)){
-    el.innerHTML = '<div class="empty-hint">Arquivo <code>letra.js</code> não carregou.</div>';
-    return;
-  }
-  el.innerHTML = LETRA.map(sec =>
-    '<div class="lyr-sec"><div class="sec-name">'+esc(sec.name||"")+'</div>' +
-    (sec.lines||[]).map(renderLine).join("") + '</div>'
-  ).join("") +
-  (lyricsFilled() ? "" :
-    '<div class="empty-hint">Ainda só com os acordes. Abra <code>letra.js</code>, digite a letra entre os colchetes ' +
-    '(ex.: <code>[G]sua sílaba aqui [C]e aqui</code>) e recarregue esta página.</div>');
-}
-
-function setMode(m){
-  mode = m;
-  const grid = m === "grid";
-  document.getElementById("chart").hidden   = !grid;
-  document.getElementById("lyrics").hidden  =  grid;
-  document.getElementById("warnBox").hidden = !grid;
-  document.getElementById("modeGrid").classList.toggle("on", grid);
-  document.getElementById("modeLyr").classList.toggle("on", !grid);
-  document.getElementById("chartLead").innerHTML = grid
-    ? 'Cada bloco separado por linha vertical é <b>1 compasso</b> (4 tempos). Só a harmonia — sem tablatura de dedilhado atravessando, pra você ler a música inteira de cima a baixo.'
-    : 'Acordes posicionados sobre a sílaba em que entram. Editável em <code>letra.js</code>.';
-  try{ localStorage.setItem("aq-mode", m); }catch(e){}
-}
-document.getElementById("modeGrid").onclick = ()=> setMode("grid");
-document.getElementById("modeLyr").onclick  = ()=> setMode("lyr");
-
-/* ============ controles ============ */
+/* ================= controles ================= */
 function apply(){
-  renderChart(); renderDiagrams(); renderLyrics();
+  renderChart(); renderDiagrams();
+  if(cifraText) document.getElementById("cifra").innerHTML = renderCifra(cifraText);
   const k = transposeChord("G", shift);
   document.getElementById("keyNow").textContent = k;
   document.getElementById("factKey").textContent = k;
   const cn = document.getElementById("capoNote");
   if(shift === 0){ cn.classList.remove("show"); cn.textContent = ""; }
-  else {
+  else{
     cn.classList.add("show");
-    cn.innerHTML = 'Tom de <b>'+k+'</b> ('+(shift>0?'+':'')+shift+' semitons). Atalho: mantenha as formas de G e ponha o <b>capotraste na casa '+(((shift%12)+12)%12)+'</b>.';
+    cn.innerHTML = 'Tom de <b>'+k+'</b> ('+(shift>0?"+":"")+shift+' semitons). Atalho: formas de G + <b>capotraste na casa '+(((shift%12)+12)%12)+'</b>.';
   }
 }
 document.getElementById("up").onclick    = ()=>{ shift = Math.min(11, shift+1); apply(); };
 document.getElementById("down").onclick  = ()=>{ shift = Math.max(-11, shift-1); apply(); };
 document.getElementById("reset").onclick = ()=>{ shift = 0; apply(); };
 
-let fs = 100;
-const setFS = ()=> document.documentElement.style.setProperty("--fs", (fs/100)+"rem");
-document.getElementById("fsUp").onclick   = ()=>{ fs = Math.min(190, fs+10); setFS(); };
-document.getElementById("fsDown").onclick = ()=>{ fs = Math.max(80, fs-10); setFS(); };
+let fs = 100, cfs = 100;
+document.getElementById("fsUp").onclick   = ()=>{ fs=Math.min(170,fs+8); cfs=Math.min(200,cfs+10); setFS(); };
+document.getElementById("fsDown").onclick = ()=>{ fs=Math.max(80,fs-8);  cfs=Math.max(70,cfs-10);  setFS(); };
+function setFS(){
+  const r = document.documentElement.style;
+  r.setProperty("--fs", (fs/100)+"rem");
+  r.setProperty("--cfs", (cfs/100)+"rem");
+  try{ localStorage.setItem("aq-fs", fs+","+cfs); }catch(e){}
+}
+
+function setView(v){
+  const c = v === "cifra";
+  document.getElementById("cardCifra").hidden = !c;
+  document.getElementById("cardGrade").hidden =  c;
+  document.getElementById("mCifra").classList.toggle("on", c);
+  document.getElementById("mGrade").classList.toggle("on", !c);
+  try{ localStorage.setItem("aq-view", v); }catch(e){}
+}
+document.getElementById("mCifra").onclick = ()=> setView("cifra");
+document.getElementById("mGrade").onclick = ()=> setView("grade");
 
 document.getElementById("theme").onclick = ()=>{
   const cur = document.documentElement.getAttribute("data-theme");
-  const dark = cur ? cur === "dark"
-    : matchMedia("(prefers-color-scheme: dark)").matches;
+  const dark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
   document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
 };
 
-/* tela ligada no tablet */
 let lock = null;
 const awakeBtn = document.getElementById("awake");
 awakeBtn.onclick = async ()=>{
-  if(!("wakeLock" in navigator)){ awakeBtn.textContent = "não suportado"; return; }
+  if(!("wakeLock" in navigator)){ awakeBtn.textContent = "n/d"; return; }
   try{
-    if(lock){ await lock.release(); lock = null; awakeBtn.classList.remove("on"); awakeBtn.textContent = "☀️ Tela ligada"; }
-    else { lock = await navigator.wakeLock.request("screen"); awakeBtn.classList.add("on"); awakeBtn.textContent = "☀️ Tela travada"; }
+    if(lock){ await lock.release(); lock=null; awakeBtn.classList.remove("on"); awakeBtn.textContent = "☀️ Tela"; }
+    else{ lock = await navigator.wakeLock.request("screen"); awakeBtn.classList.add("on"); awakeBtn.textContent = "☀️ Travada"; }
   }catch(e){ awakeBtn.textContent = "falhou"; }
 };
 document.addEventListener("visibilitychange", async ()=>{
@@ -579,9 +609,23 @@ document.addEventListener("visibilitychange", async ()=>{
   }
 });
 
-apply();
-try{ setMode(localStorage.getItem("aq-mode") === "lyr" ? "lyr" : "grid"); }
-catch(e){ setMode("grid"); }
+/* colar direto na página já monta */
+document.getElementById("raw").addEventListener("paste", ()=>{
+  setTimeout(()=>document.getElementById("build").click(), 30);
+});
+
+/* ================= boot ================= */
+(function boot(){
+  try{
+    const saved = localStorage.getItem(KEY);
+    if(saved) cifraText = saved;
+    const f = localStorage.getItem("aq-fs");
+    if(f){ const [a,b] = f.split(","); fs = +a || 100; cfs = +b || 100; setFS(); }
+    setView(localStorage.getItem("aq-view") === "grade" ? "grade" : "cifra");
+  }catch(e){ setView("cifra"); }
+  showCifra();
+  apply();
+})();
 </script>
 </body>
 </html>
