@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b6ca8">
+<title>Aquarela — Toquinho · Grade de acordes</title>
+<style>
+  :root{
+    --bg:#fbf9f4; --card:#ffffff; --ink:#1e2430; --muted:#6b7280; --line:#e7e2d8;
+    --accent:#1b6ca8; --accent2:#d97706; --accent3:#0f766e; --chip:#eef4f9;
+    --shadow:0 1px 2px rgba(20,30,50,.06), 0 8px 24px rgba(20,30,50,.06);
+    --fs:1rem;
+  }
+  :root[data-theme="dark"], html.dark{
+    --bg:#11151c; --card:#171d26; --ink:#e8eaf0; --muted:#9aa3b2; --line:#2a3340;
+    --accent:#63b3ed; --accent2:#f0b429; --accent3:#5eead4; --chip:#1e2733;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#11151c; --card:#171d26; --ink:#e8eaf0; --muted:#9aa3b2; --line:#2a3340;
+      --accent:#63b3ed; --accent2:#f0b429; --accent3:#5eead4; --chip:#1e2733;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font:var(--fs)/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:0 16px 72px}
+
+  /* ---------- header ---------- */
+  header.hero{
+    background:linear-gradient(135deg,#1b6ca8 0%,#0f766e 45%,#d97706 100%);
+    color:#fff; padding:28px 16px 22px; margin-bottom:18px;
+  }
+  .hero-in{max-width:960px;margin:0 auto}
+  .hero h1{margin:0;font-size:clamp(1.9rem,6vw,2.8rem);line-height:1.1;letter-spacing:-.02em}
+  .hero .sub{opacity:.92;margin-top:4px;font-size:1.05rem}
+  .facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .fact{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);
+    padding:5px 11px;border-radius:999px;font-size:.85rem;white-space:nowrap}
+  .fact b{font-weight:700}
+
+  /* ---------- toolbar ---------- */
+  .toolbar{
+    position:sticky;top:0;z-index:20;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;box-shadow:var(--shadow);padding:10px;margin:-34px 0 22px;
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  }
+  .grp{display:flex;align-items:center;gap:6px;background:var(--chip);border-radius:10px;padding:4px 8px}
+  .grp .lbl{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  button{
+    font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);
+    border-radius:9px;padding:8px 12px;cursor:pointer;min-width:44px;min-height:40px;
+    touch-action:manipulation;
+  }
+  button:active{transform:translateY(1px)}
+  button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .key-now{font-weight:700;font-variant-numeric:tabular-nums;min-width:2.6em;text-align:center}
+  .capo-note{font-size:.85rem;color:var(--accent2);width:100%;display:none}
+  .capo-note.show{display:block}
+
+  /* ---------- cards ---------- */
+  section.card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    box-shadow:var(--shadow);padding:18px 18px 20px;margin:0 0 18px;
+  }
+  h2{margin:0 0 12px;font-size:1.3rem;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+  h2 .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none}
+  h3{margin:22px 0 8px;font-size:1.02rem}
+  p{margin:0 0 12px}
+  .lead{color:var(--muted)}
+
+  /* ---------- chord grid ---------- */
+  .sec{margin:0 0 20px}
+  .sec-name{
+    font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:7px;display:flex;align-items:baseline;gap:10px;
+  }
+  .sec-name .rep{color:var(--muted);font-weight:600;letter-spacing:.02em;text-transform:none;font-size:.82rem}
+  .line{
+    display:flex;flex-wrap:wrap;gap:0;border-left:3px solid var(--line);
+    border-radius:3px;margin-bottom:7px;
+  }
+  .bar{
+    flex:1 1 5.5em;min-width:5.5em;padding:9px 6px;text-align:center;
+    border-right:1px solid var(--line);
+  }
+  .bar:first-child{border-left:0}
+  .ch{
+    font-weight:700;font-size:1.45rem;letter-spacing:-.01em;color:var(--ink);
+    font-variant-ligatures:none;
+  }
+  .ch sup{font-size:.62em;font-weight:700}
+  .ch .bass{color:var(--accent3)}
+  .line.hl{border-left-color:var(--accent2);background:linear-gradient(90deg,rgba(217,119,6,.07),transparent 65%)}
+  .note-inline{font-size:.88rem;color:var(--muted);margin:2px 0 10px}
+
+  /* ---------- chord diagrams ---------- */
+  .diagrams{display:flex;flex-wrap:wrap;gap:12px}
+  .dg{width:92px;text-align:center}
+  .dg .nm{font-weight:700;font-size:1rem;margin-bottom:2px}
+  .dg svg{display:block;margin:0 auto}
+  .dg .fingers{font-size:.72rem;color:var(--muted);margin-top:2px;line-height:1.3}
+
+  /* ---------- lists / tips ---------- */
+  ul,ol{margin:0 0 12px;padding-left:1.25em}
+  li{margin:0 0 7px}
+  .tip{
+    border-left:4px solid var(--accent3);background:var(--chip);
+    padding:12px 14px;border-radius:0 10px 10px 0;margin:0 0 14px;
+  }
+  .tip b{color:var(--accent3)}
+  .why{font-size:.92rem;color:var(--muted);margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:.94rem;margin:0 0 14px}
+  th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+  code{
+    background:var(--chip);padding:1px 6px;border-radius:6px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;
+  }
+  a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+  .links{list-style:none;padding:0}
+  .links li{margin:0 0 10px}
+  .links a{font-weight:600}
+  .links .d{display:block;font-size:.88rem;color:var(--muted);font-weight:400}
+  .warn{
+    border:1px dashed var(--line);border-radius:12px;padding:12px 14px;
+    font-size:.92rem;color:var(--muted);background:transparent;
+  }
+  footer{text-align:center;color:var(--muted);font-size:.85rem;padding:8px 0 0}
+  .overflow{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  @media print{
+    .toolbar,header.hero,.no-print{display:none}
+    section.card{box-shadow:none;border:0;page-break-inside:avoid;padding:0;margin-bottom:14px}
+    body{background:#fff}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-in">
+    <h1>Aquarela</h1>
+    <div class="sub">Toquinho · Vinicius de Moraes · Maurizio Fabrizio · Guido Morra — 1983</div>
+    <div class="facts">
+      <span class="fact">Tom: <b id="factKey">G</b></span>
+      <span class="fact">Sem capotraste</span>
+      <span class="fact">Afinação padrão <b>E A D G B E</b></span>
+      <span class="fact">Compasso <b>4/4</b></span>
+      <span class="fact">~72–80 BPM</span>
+      <span class="fact">Nível: <b>iniciante+</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="toolbar">
+    <div class="grp">
+      <span class="lbl">Tom</span>
+      <button id="down" aria-label="Baixar meio tom">−</button>
+      <span class="key-now" id="keyNow">G</span>
+      <button id="up" aria-label="Subir meio tom">+</button>
+      <button id="reset" title="Voltar ao original">↺</button>
+    </div>
+    <div class="grp">
+      <span class="lbl">Fonte</span>
+      <button id="fsDown" aria-label="Diminuir fonte">A−</button>
+      <button id="fsUp" aria-label="Aumentar fonte">A+</button>
+    </div>
+    <div class="grp">
+      <button id="theme">🌗 Tema</button>
+      <button id="awake" title="Impede a tela de apagar">☀️ Tela ligada</button>
+    </div>
+    <div class="capo-note" id="capoNote"></div>
+  </div>
+
+  <section class="card">
+    <h2><span class="dot"></span>Grade de acordes</h2>
+    <p class="lead">Cada bloco separado por linha vertical é <b>1 compasso</b> (4 tempos). Só a harmonia — sem letra e sem tablatura de dedilhado atravessando, pra você ler a música inteira de cima a baixo.</p>
+    <div id="chart"></div>
+    <div class="warn">
+      A letra não está reproduzida aqui (é material protegido por direitos autorais). Para cantar junto, abra a
+      <a href="https://www.cifraclub.com.br/toquinho/aquarela/" target="_blank" rel="noopener">cifra oficial no Cifra Club</a>
+      ou a <a href="https://www.letras.mus.br/toquinho/49005/" target="_blank" rel="noopener">letra no Letras.mus.br</a> ao lado.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot" style="background:var(--accent3)"></span>Os 11 acordes, com digitação</h2>
+    <p class="lead">Números = casa. <code>0</code> corda solta, <code>×</code> corda que não soa. Leitura da esquerda (mi grave) para a direita (mi agudo).</p>
+    <div class="diagrams" id="diagrams"></div>
+    <p class="note-inline" id="dgNote"></p>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot" style="background:var(--accent2)"></span>O segredo da música: a escada do baixo</h2>
+    <p>Imagine que sua mão esquerda é uma pessoa parada numa escada rolante. <b>Ela quase não se mexe</b> — quem anda é só o pé de baixo, descendo ou subindo um degrau por vez. É exatamente isso que acontece em Aquarela.</p>
+    <div class="tip">
+      <b>Na estrofe o baixo SOBE:</b> G → G/B → C → C/D é a nota grave andando <b>Sol → Si → Dó → Ré</b>.
+      <div class="why">A mão fica praticamente na mesma posição; você só troca qual corda grave ataca.</div>
+    </div>
+    <div class="tip">
+      <b>No refrão o baixo DESCE:</b> G → D/F# → C/E → C/D é <b>Sol → Fá# → Mi → Ré</b>.
+      <div class="why">Sobe na estrofe, desce no refrão. Essa simetria é o que dá a sensação de "aquarela escorrendo".</div>
+    </div>
+    <p>Sacar isso muda tudo na hora de decorar: em vez de 11 acordes soltos, você memoriza <b>duas escadinhas</b>, uma subindo e uma descendo.</p>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot" style="background:var(--accent2)"></span>Como trocar acordes mais rápido</h2>
+
+    <h3>1. Dedo-âncora: nunca levante o dedo que já está certo</h3>
+    <p>É como trocar de marcha sem tirar a mão do câmbio. Nas trocas dessa música quase sempre sobra um dedo no lugar:</p>
+    <div class="overflow">
+    <table>
+      <tr><th>Troca</th><th>O que fazer</th><th>Dedo que fica</th></tr>
+      <tr><td><b>G → G/B</b></td><td>Não mexe nada. Só ataque a partir da 5ª corda</td><td>todos</td></tr>
+      <tr><td><b>C → C/D</b></td><td>Solte os dedos das cordas graves, mantenha o indicador</td><td>indicador (2ª corda, casa 1)</td></tr>
+      <tr><td><b>C → C/E</b></td><td>Mesma forma do C, só deixe a 6ª corda soar solta</td><td>todos</td></tr>
+      <tr><td><b>Em → Em/D</b></td><td>Tire os dois dedos e ataque da 4ª corda</td><td>—</td></tr>
+      <tr><td><b>C → F7M</b></td><td>Escorregue a forma; mínimo e anelar saem</td><td>indicador e médio</td></tr>
+      <tr><td><b>Em → A7</b></td><td>Mesmo desenho, uma corda pra baixo</td><td>forma inteira</td></tr>
+    </table>
+    </div>
+
+    <h3>2. Troque no ar, não no tempo</h3>
+    <p>O erro clássico é esperar a batida chegar pra começar a mudar. Faça o contrário: <b>levante a mão meio tempo antes</b> do fim do compasso. O ouvinte não escuta o buraquinho; ele escuta a pausa se você chegar atrasado.</p>
+
+    <h3>3. Exercício do metrônomo lento (o mais eficaz)</h3>
+    <ol>
+      <li>Metrônomo em <b>50 BPM</b>. Toque só <b>G no tempo 1</b> e <b>C no tempo 3</b>. Nada mais.</li>
+      <li>Só suba pra 60 quando fizer 8 vezes seguidas sem falhar. Depois 70, 80…</li>
+      <li>Repita para cada par difícil isolado: <code>C/D → G</code>, <code>B7 → Em</code>, <code>Em → A7</code>.</li>
+    </ol>
+    <p class="why">Velocidade não se treina tocando rápido — se treina tocando devagar sem erro e subindo o metrônomo. Errar rápido só ensina o erro.</p>
+
+    <h3>4. Mão de aranha</h3>
+    <p>Mantenha os dedos <b>curvados e a 1 cm das cordas</b> o tempo todo. Dedo esticado longe do braço é distância extra a percorrer em cada troca — é a diferença entre estar sentado na cadeira ou já de pé quando te chamam.</p>
+
+    <h3>5. B7 é o vilão — ataque ele sozinho</h3>
+    <p>Na música inteira ele aparece pouco (só na virada do refrão), mas é o acorde de 4 dedos. Trate <code>G → B7 → Em</code> como um exercício separado, 20 repetições por dia, antes de tocar a música completa.</p>
+
+    <h3>Se você é bem iniciante</h3>
+    <ul>
+      <li><b>Simplifique os baixos.</b> Toque <code>G · G · C · C</code> no lugar de <code>G · G/B · C · C/D</code>. A música continua reconhecível e você já toca ela hoje. Depois adiciona os baixos um por vez.</li>
+      <li><b>Comece só com a estrofe.</b> São 4 compassos que se repetem — 80% da música.</li>
+      <li><b>Ritmo mínimo que funciona:</b> uma batida pra baixo em cada tempo (4 por compasso). Feio é parar, não é ser simples.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot" style="background:var(--accent3)"></span>Ritmo e dedilhado (opcional, fora da grade)</h2>
+    <p>Aquarela é normalmente tocada <b>dedilhada</b>, mas você não precisa disso pra ela soar bem.</p>
+    <div class="tip">
+      <b>Nível 1 — batida simples:</b> ↓ ↓ ↓ ↓ (uma por tempo, mão solta)
+    </div>
+    <div class="tip">
+      <b>Nível 2 — balanço:</b> ↓ · ↓↑ · ↑ ↓↑ &nbsp; (o clássico "baixo-em-cima" da MPB)
+    </div>
+    <div class="tip">
+      <b>Nível 3 — dedilhado:</b> polegar toca só a nota do baixo (é ela que faz a escada!) e indicador/médio/anelar tocam as 3 cordas finas juntas ou alternadas: <code>P — i m a — m i</code> em cada compasso.
+      <div class="why">Se você entendeu a escada do baixo, o dedilhado vira quase automático: o polegar é quem "anda" na escada.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot" style="background:var(--accent2)"></span>Curiosidades</h2>
+    <ul>
+      <li><b>Ela nasceu em italiano.</b> A canção foi lançada em 1983 como <i>"Acquarello"</i>, com letra de <b>Guido Morra</b> e música de Toquinho e do italiano <b>Maurizio Fabrizio</b>. A versão em português veio depois, quando Toquinho decidiu adaptar a letra para gravar no Brasil.</li>
+      <li><b>Toquinho foi o primeiro brasileiro a receber disco de ouro na Itália</b> — graças ao sucesso estrondoso de "Acquarello" nas rádios italianas.</li>
+      <li><b>A melodia ficou pronta em menos de 10 minutos</b>, segundo o próprio Toquinho.</li>
+      <li><b>A harmonia veio de outra música.</b> A base harmônica tem parentesco com um tema que Toquinho fez com Vinicius de Moraes em 1974 para a trilha da novela <i>Fogo Sobre Terra</i>, da TV Globo. Toquinho percebeu a semelhança e as duas ideias acabaram fundidas numa canção só.</li>
+      <li><b>Vinicius não viu o sucesso.</b> O Poetinha morreu em 1980; a canção só estourou em 1983.</li>
+      <li><b>O comercial que virou cultura.</b> Em 1983 a Faber-Castell usou Aquarela numa propaganda de lápis de cor que se tornou um dos comerciais mais icônicos da TV brasileira — reexibida e refilmada por décadas (versões em 2001, 2012, 2018…). Em 2012 já se contavam mais de 25 versões do filme com a mesma música.</li>
+      <li><b>Harmonia "de compositor, não de violonista".</b> Repare que <i>metade</i> dos acordes são inversões (<code>/B</code>, <code>/D</code>, <code>/F#</code>, <code>/E</code>) — isso é escrita pensada na linha de baixo, típica da MPB pós-bossa, e é o que faz a música parecer mais complexa do que é pra mão esquerda.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot"></span>Links</h2>
+    <ul class="links">
+      <li><a href="https://www.cifraclub.com.br/toquinho/aquarela/" target="_blank" rel="noopener">Cifra Club — Aquarela</a><span class="d">Cifra completa com letra, tablatura do dedilhado e player</span></li>
+      <li><a href="https://www.letras.mus.br/toquinho/49005/" target="_blank" rel="noopener">Letras.mus.br — letra completa</a><span class="d">Só a letra, pra deixar na tela ao lado</span></li>
+      <li><a href="https://www.culturagenial.com/musica-aquarela/" target="_blank" rel="noopener">Cultura Genial — análise e significado</a><span class="d">Leitura do que a letra quer dizer, verso a verso</span></li>
+      <li><a href="https://www.letras.mus.br/blog/historia-musica-aquarela/" target="_blank" rel="noopener">Letras — a história da música</a><span class="d">Como a parceria com os italianos aconteceu</span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Aquarela_(song)" target="_blank" rel="noopener">Wikipedia — Aquarela (song)</a><span class="d">Ficha técnica, gravações e versões</span></li>
+      <li><a href="https://www.youtube.com/results?search_query=faber+castell+aquarela+1983+comercial" target="_blank" rel="noopener">YouTube — o comercial da Faber-Castell de 1983</a><span class="d">O clássico dos lápis de cor</span></li>
+      <li><a href="https://www.youtube.com/results?search_query=toquinho+aquarela+ao+vivo" target="_blank" rel="noopener">YouTube — Toquinho tocando ao vivo</a><span class="d">Referência de andamento e de dedilhado real</span></li>
+    </ul>
+  </section>
+
+  <footer>Grade de acordes montada a partir da cifra pública do Cifra Club · sem letra por respeito a direitos autorais</footer>
+</div>
+
+<script>
+/* ============ dados ============ */
+const SECTIONS = [
+  {name:"Intro", rep:"2×", lines:[["G","G/B","C","C/D"]]},
+  {name:"Primeira parte (estrofe)", rep:"repete o ciclo enquanto durar a estrofe", lines:[
+    ["G","G/B","C","C/D"],
+    ["G","G/B","C","C/D"]
+  ]},
+  {name:"Pré-refrão", rep:"", hl:true, lines:[
+    ["Em","Em/D","C","F7M"],
+    ["G","G/B","C","C/D"]
+  ]},
+  {name:"Refrão", rep:"", hl:true, lines:[
+    ["G","D/F#","C/E","C/D"],
+    ["G","D/F#","C/E","C/D"],
+    ["G","B7","Em","A7","C/D"]
+  ]},
+  {name:"Segunda parte (estrofe)", rep:"igual à primeira", lines:[
+    ["G","G/B","C","C/D"],
+    ["G","G/B","C","C/D"]
+  ]},
+  {name:"Pré-refrão", rep:"igual ao primeiro", hl:true, lines:[
+    ["Em","Em/D","C","F7M"],
+    ["G","G/B","C","C/D"]
+  ]},
+  {name:"Refrão", rep:"igual ao primeiro", hl:true, lines:[
+    ["G","D/F#","C/E","C/D"],
+    ["G","D/F#","C/E","C/D"],
+    ["G","B7","Em","A7","C/D"]
+  ]},
+  {name:"Final", rep:"repete e resolve", lines:[
+    ["G","G/B","C","C/D"],
+    ["G","G/B","C","C/D"],
+    ["G"]
+  ]}
+];
+
+/* forma: [mi grave ... mi agudo], -1 = abafada */
+const SHAPES = {
+  "G":     {frets:[3,2,0,0,0,3], fing:"2-1-0-0-0-3"},
+  "G/B":   {frets:[-1,2,0,0,0,3], fing:"×-1-0-0-0-3"},
+  "C":     {frets:[-1,3,2,0,1,0], fing:"×-3-2-0-1-0"},
+  "C/D":   {frets:[-1,-1,0,0,1,0], fing:"só o indicador"},
+  "C/E":   {frets:[0,3,2,0,1,0], fing:"C com 6ª solta"},
+  "D/F#":  {frets:[2,-1,0,2,3,2], fing:"polegar na 6ª"},
+  "Em":    {frets:[0,2,2,0,0,0], fing:"0-2-3-0-0-0"},
+  "Em/D":  {frets:[-1,-1,0,0,0,0], fing:"tudo solto"},
+  "F7M":   {frets:[-1,-1,3,2,1,0], fing:"×-×-3-2-1-0"},
+  "B7":    {frets:[-1,2,1,2,0,2], fing:"×-2-1-3-0-4"},
+  "A7":    {frets:[-1,0,2,0,2,0], fing:"×-0-2-0-3-0"}
+};
+
+const NOTES  = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const FLATS  = {"C#":"Db","D#":"Eb","F#":"F#","G#":"Ab","A#":"Bb"};
+
+/* ============ transposição ============ */
+let shift = 0;
+
+function transposeRoot(root, s){
+  let i = NOTES.indexOf(root);
+  if(i < 0){ // trata bemóis
+    const map={"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"};
+    i = NOTES.indexOf(map[root] ?? root);
+  }
+  if(i < 0) return root;
+  return NOTES[(i + s + 120) % 12];
+}
+function transposeChord(ch, s){
+  if(s === 0) return ch;
+  const [main, bass] = ch.split("/");
+  const m = main.match(/^([A-G][#b]?)(.*)$/);
+  if(!m) return ch;
+  let out = transposeRoot(m[1], s) + m[2];
+  if(bass) out += "/" + transposeRoot(bass, s);
+  return out;
+}
+function fmtChord(ch){
+  const [main, bass] = ch.split("/");
+  const m = main.match(/^([A-G][#b]?)(.*)$/) || [null, main, ""];
+  let html = m[1] + (m[2] ? "<sup>"+m[2]+"</sup>" : "");
+  if(bass) html += '<span class="bass">/'+bass+'</span>';
+  return html;
+}
+
+/* ============ render grade ============ */
+function renderChart(){
+  const el = document.getElementById("chart");
+  el.innerHTML = SECTIONS.map(sec => {
+    const lines = sec.lines.map(bars =>
+      '<div class="line'+(sec.hl?' hl':'')+'">' +
+      bars.map(c => '<div class="bar"><span class="ch">'+fmtChord(transposeChord(c, shift))+'</span></div>').join("") +
+      '</div>'
+    ).join("");
+    return '<div class="sec"><div class="sec-name">'+sec.name+
+      (sec.rep?'<span class="rep">'+sec.rep+'</span>':'')+'</div>'+lines+'</div>';
+  }).join("");
+}
+
+/* ============ render diagramas ============ */
+function diagramSVG(frets){
+  const W=76,H=92,L=10,T=16,SW=11,FH=15;
+  let s = '<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" aria-hidden="true">';
+  s += '<rect x="'+L+'" y="'+T+'" width="'+(SW*5)+'" height="4" fill="currentColor"/>'; // pestana
+  for(let i=0;i<6;i++)
+    s += '<line x1="'+(L+i*SW)+'" y1="'+T+'" x2="'+(L+i*SW)+'" y2="'+(T+FH*4)+'" stroke="currentColor" stroke-width="1" opacity=".55"/>';
+  for(let f=1;f<=4;f++)
+    s += '<line x1="'+L+'" y1="'+(T+f*FH)+'" x2="'+(L+SW*5)+'" y2="'+(T+f*FH)+'" stroke="currentColor" stroke-width="1" opacity=".35"/>';
+  frets.forEach((fr,i)=>{
+    const x = L + i*SW;
+    if(fr === -1)
+      s += '<text x="'+x+'" y="'+(T-4)+'" font-size="9" text-anchor="middle" fill="currentColor" opacity=".6">×</text>';
+    else if(fr === 0)
+      s += '<circle cx="'+x+'" cy="'+(T-7)+'" r="3" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".7"/>';
+    else
+      s += '<circle cx="'+x+'" cy="'+(T+fr*FH-FH/2)+'" r="4.6" fill="currentColor"/>';
+  });
+  return s + '</svg>';
+}
+function renderDiagrams(){
+  const order = ["G","G/B","C","C/D","C/E","D/F#","Em","Em/D","F7M","B7","A7"];
+  document.getElementById("diagrams").innerHTML = order.map(n => {
+    const sh = SHAPES[n];
+    const label = shift === 0 ? n : transposeChord(n, shift);
+    return '<div class="dg"><div class="nm">'+fmtChord(label)+'</div>'+diagramSVG(sh.frets)+
+           '<div class="fingers">'+sh.fing+'</div></div>';
+  }).join("");
+  document.getElementById("dgNote").innerHTML = shift === 0
+    ? 'Formas no tom original de <b>G</b>.'
+    : '⚠️ Você transpôs. As <b>formas dos desenhos continuam as do tom de G</b> — a maneira prática de tocar no tom novo é manter estas formas e usar <b>capotraste na casa '+((shift%12)+12)%12+'</b>.';
+}
+
+/* ============ controles ============ */
+function apply(){
+  renderChart(); renderDiagrams();
+  const k = transposeChord("G", shift);
+  document.getElementById("keyNow").textContent = k;
+  document.getElementById("factKey").textContent = k;
+  const cn = document.getElementById("capoNote");
+  if(shift === 0){ cn.classList.remove("show"); cn.textContent = ""; }
+  else {
+    cn.classList.add("show");
+    cn.innerHTML = 'Tom de <b>'+k+'</b> ('+(shift>0?'+':'')+shift+' semitons). Atalho: mantenha as formas de G e ponha o <b>capotraste na casa '+(((shift%12)+12)%12)+'</b>.';
+  }
+}
+document.getElementById("up").onclick    = ()=>{ shift = Math.min(11, shift+1); apply(); };
+document.getElementById("down").onclick  = ()=>{ shift = Math.max(-11, shift-1); apply(); };
+document.getElementById("reset").onclick = ()=>{ shift = 0; apply(); };
+
+let fs = 100;
+const setFS = ()=> document.documentElement.style.setProperty("--fs", (fs/100)+"rem");
+document.getElementById("fsUp").onclick   = ()=>{ fs = Math.min(190, fs+10); setFS(); };
+document.getElementById("fsDown").onclick = ()=>{ fs = Math.max(80, fs-10); setFS(); };
+
+document.getElementById("theme").onclick = ()=>{
+  const cur = document.documentElement.getAttribute("data-theme");
+  const dark = cur ? cur === "dark"
+    : matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+};
+
+/* tela ligada no tablet */
+let lock = null;
+const awakeBtn = document.getElementById("awake");
+awakeBtn.onclick = async ()=>{
+  if(!("wakeLock" in navigator)){ awakeBtn.textContent = "não suportado"; return; }
+  try{
+    if(lock){ await lock.release(); lock = null; awakeBtn.classList.remove("on"); awakeBtn.textContent = "☀️ Tela ligada"; }
+    else { lock = await navigator.wakeLock.request("screen"); awakeBtn.classList.add("on"); awakeBtn.textContent = "☀️ Tela travada"; }
+  }catch(e){ awakeBtn.textContent = "falhou"; }
+};
+document.addEventListener("visibilitychange", async ()=>{
+  if(lock && document.visibilityState === "visible"){
+    try{ lock = await navigator.wakeLock.request("screen"); }catch(e){}
+  }
+});
+
+apply();
+</script>
+</body>
+</html>
