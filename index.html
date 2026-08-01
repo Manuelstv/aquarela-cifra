@@ -101,6 +101,24 @@
   .line.hl{border-left-color:var(--accent2);background:linear-gradient(90deg,rgba(217,119,6,.07),transparent 65%)}
   .note-inline{font-size:.88rem;color:var(--muted);margin:2px 0 10px}
 
+  /* ---------- modo cifra + letra (ChordPro) ---------- */
+  .lyr-line{margin:0 0 6px;line-height:1.25}
+  .lyr-line.blank{height:.7em}
+  .unit{display:inline-block;vertical-align:bottom;white-space:pre}
+  .unit .uc{
+    display:block;font-weight:700;color:var(--accent);font-size:.9em;
+    line-height:1.35;min-height:1.35em;letter-spacing:-.01em;
+  }
+  .unit .uc .bass{color:var(--accent3)}
+  .unit .ut{display:block;line-height:1.45}
+  .lyr-line.chords-only .ut{display:none}
+  .lyr-sec{margin:0 0 20px}
+  .empty-hint{
+    border:1px dashed var(--line);border-radius:12px;padding:14px 16px;
+    color:var(--muted);font-size:.93rem;
+  }
+  .empty-hint code{display:inline-block;margin-top:2px}
+
   /* ---------- chord diagrams ---------- */
   .diagrams{display:flex;flex-wrap:wrap;gap:12px}
   .dg{width:92px;text-align:center}
@@ -170,6 +188,11 @@
       <button id="reset" title="Voltar ao original">↺</button>
     </div>
     <div class="grp">
+      <span class="lbl">Modo</span>
+      <button id="modeGrid" class="on">Grade</button>
+      <button id="modeLyr">Cifra + letra</button>
+    </div>
+    <div class="grp">
       <span class="lbl">Fonte</span>
       <button id="fsDown" aria-label="Diminuir fonte">A−</button>
       <button id="fsUp" aria-label="Aumentar fonte">A+</button>
@@ -183,12 +206,13 @@
 
   <section class="card">
     <h2><span class="dot"></span>Grade de acordes</h2>
-    <p class="lead">Cada bloco separado por linha vertical é <b>1 compasso</b> (4 tempos). Só a harmonia — sem letra e sem tablatura de dedilhado atravessando, pra você ler a música inteira de cima a baixo.</p>
+    <p class="lead" id="chartLead">Cada bloco separado por linha vertical é <b>1 compasso</b> (4 tempos). Só a harmonia — sem tablatura de dedilhado atravessando, pra você ler a música inteira de cima a baixo.</p>
     <div id="chart"></div>
-    <div class="warn">
-      A letra não está reproduzida aqui (é material protegido por direitos autorais). Para cantar junto, abra a
-      <a href="https://www.cifraclub.com.br/toquinho/aquarela/" target="_blank" rel="noopener">cifra oficial no Cifra Club</a>
-      ou a <a href="https://www.letras.mus.br/toquinho/49005/" target="_blank" rel="noopener">letra no Letras.mus.br</a> ao lado.
+    <div id="lyrics" hidden></div>
+    <div class="warn" id="warnBox">
+      A letra não vem preenchida aqui. Para incluí-la, edite o arquivo <code>letra.js</code> (as instruções estão no topo dele)
+      e alterne para o modo <b>Cifra + letra</b>. A letra oficial está no
+      <a href="https://www.cifraclub.com.br/toquinho/aquarela/" target="_blank" rel="noopener">Cifra Club</a>.
     </div>
   </section>
 
@@ -299,6 +323,7 @@
   <footer>Grade de acordes montada a partir da cifra pública do Cifra Club · sem letra por respeito a direitos autorais</footer>
 </div>
 
+<script src="letra.js"></script>
 <script>
 /* ============ dados ============ */
 const SECTIONS = [
@@ -430,9 +455,88 @@ function renderDiagrams(){
     : '⚠️ Você transpôs. As <b>formas dos desenhos continuam as do tom de G</b> — a maneira prática de tocar no tom novo é manter estas formas e usar <b>capotraste na casa '+((shift%12)+12)%12+'</b>.';
 }
 
+/* ============ modo cifra + letra (ChordPro) ============ */
+let mode = "grid";
+
+function esc(s){ return s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+
+/* "[G]texto [C]mais" -> pares acorde/texto, quebrando por palavra p/ permitir wrap */
+function renderLine(raw){
+  if(!raw || !raw.trim()) return '<div class="lyr-line blank"></div>';
+
+  const tokens = [];
+  const re = /\[([^\]]+)\]/g;
+  let last = 0, m;
+  while((m = re.exec(raw)) !== null){
+    if(m.index > last) tokens.push({chord:null, text: raw.slice(last, m.index)});
+    tokens.push({chord: m[1], text: ""});
+    last = re.lastIndex;
+  }
+  if(last < raw.length) tokens.push({chord:null, text: raw.slice(last)});
+
+  /* junta cada acorde com o texto que vem logo depois */
+  const pairs = [];
+  for(const t of tokens){
+    if(t.chord !== null) pairs.push({chord: t.chord, text: ""});
+    else if(pairs.length) pairs[pairs.length-1].text += t.text;
+    else pairs.push({chord: null, text: t.text});
+  }
+
+  const hasText = pairs.some(p => p.text.trim() !== "");
+  let html = "";
+  for(const p of pairs){
+    const ch = p.chord ? fmtChord(transposeChord(p.chord, shift)) : "";
+    /* quebra o texto em palavras: só a primeira carrega o acorde */
+    const words = p.text.length ? p.text.match(/\S+\s*|\s+/g) || [] : [""];
+    words.forEach((w, i) => {
+      const c = i === 0 ? ch : "";
+      if(!c && !w) return;
+      html += '<span class="unit"><span class="uc">'+c+'</span>'+
+              '<span class="ut">'+esc(w)+'</span></span>';
+    });
+  }
+  return '<div class="lyr-line'+(hasText ? "" : " chords-only")+'">'+html+'</div>';
+}
+
+function lyricsFilled(){
+  return typeof LETRA !== "undefined" && Array.isArray(LETRA) &&
+    LETRA.some(s => (s.lines||[]).some(l => l.replace(/\[[^\]]*\]/g, "").trim() !== ""));
+}
+
+function renderLyrics(){
+  const el = document.getElementById("lyrics");
+  if(typeof LETRA === "undefined" || !Array.isArray(LETRA)){
+    el.innerHTML = '<div class="empty-hint">Arquivo <code>letra.js</code> não carregou.</div>';
+    return;
+  }
+  el.innerHTML = LETRA.map(sec =>
+    '<div class="lyr-sec"><div class="sec-name">'+esc(sec.name||"")+'</div>' +
+    (sec.lines||[]).map(renderLine).join("") + '</div>'
+  ).join("") +
+  (lyricsFilled() ? "" :
+    '<div class="empty-hint">Ainda só com os acordes. Abra <code>letra.js</code>, digite a letra entre os colchetes ' +
+    '(ex.: <code>[G]sua sílaba aqui [C]e aqui</code>) e recarregue esta página.</div>');
+}
+
+function setMode(m){
+  mode = m;
+  const grid = m === "grid";
+  document.getElementById("chart").hidden   = !grid;
+  document.getElementById("lyrics").hidden  =  grid;
+  document.getElementById("warnBox").hidden = !grid;
+  document.getElementById("modeGrid").classList.toggle("on", grid);
+  document.getElementById("modeLyr").classList.toggle("on", !grid);
+  document.getElementById("chartLead").innerHTML = grid
+    ? 'Cada bloco separado por linha vertical é <b>1 compasso</b> (4 tempos). Só a harmonia — sem tablatura de dedilhado atravessando, pra você ler a música inteira de cima a baixo.'
+    : 'Acordes posicionados sobre a sílaba em que entram. Editável em <code>letra.js</code>.';
+  try{ localStorage.setItem("aq-mode", m); }catch(e){}
+}
+document.getElementById("modeGrid").onclick = ()=> setMode("grid");
+document.getElementById("modeLyr").onclick  = ()=> setMode("lyr");
+
 /* ============ controles ============ */
 function apply(){
-  renderChart(); renderDiagrams();
+  renderChart(); renderDiagrams(); renderLyrics();
   const k = transposeChord("G", shift);
   document.getElementById("keyNow").textContent = k;
   document.getElementById("factKey").textContent = k;
@@ -476,6 +580,8 @@ document.addEventListener("visibilitychange", async ()=>{
 });
 
 apply();
+try{ setMode(localStorage.getItem("aq-mode") === "lyr" ? "lyr" : "grid"); }
+catch(e){ setMode("grid"); }
 </script>
 </body>
 </html>
