@@ -215,10 +215,25 @@
 
     <pre id="cifra" hidden></pre>
     <div class="row" id="cifraActions" hidden>
-      <button id="edit" class="ghost">Colar outra cifra</button>
-      <button id="dl" class="ghost">Baixar cifra.txt</button>
+      <button id="copy" class="on">📋 Copiar cifra.txt</button>
+      <button id="edit" class="ghost">Colar outra</button>
+      <button id="dl" class="ghost">Baixar</button>
       <button id="clear" class="ghost">Apagar</button>
+      <span class="stat" id="copyStat"></span>
     </div>
+    <details id="persist" hidden>
+      <summary style="cursor:pointer;color:var(--accent);font-weight:600;margin-top:14px">
+        Deixar fixo em todos os aparelhos (salvar no repositório)
+      </summary>
+      <p class="lead" style="margin-top:10px">Hoje ela está salva só <b>neste navegador</b>. Para abrir já montada no tablet, no celular e em qualquer PC, o arquivo precisa morar no repositório:</p>
+      <ol class="steps">
+        <li>Clique em <b>📋 Copiar cifra.txt</b> acima.</li>
+        <li>Abra <a id="ghNew" href="https://github.com/Manuelstv/aquarela-cifra/new/main" target="_blank" rel="noopener">github.com/Manuelstv/aquarela-cifra → Add file → Create new file</a>.</li>
+        <li>Nome do arquivo: <code>cifra.txt</code> — cole o conteúdo e <b>Commit changes</b>.</li>
+        <li>Pronto. Em ~1 min a página carrega esse arquivo sozinha, em qualquer aparelho.</li>
+      </ol>
+      <p class="note-inline">Pelo terminal, se preferir: baixe o arquivo, jogue em <code>~/aquarela-cifra/cifra.txt</code> e rode <code>git add -A &amp;&amp; git commit -m "cifra" &amp;&amp; git push</code>.</p>
+    </details>
   </section>
 
   <!-- ============ GRADE ============ -->
@@ -449,14 +464,30 @@ function renderCifra(text){
 const KEY = "aq-cifra-v1";
 let cifraText = "";
 
+let fromRepo = false;
+
 function showCifra(){
   const has = !!cifraText.trim();
   document.getElementById("pasteBox").hidden = has;
   document.getElementById("cifra").hidden = !has;
   document.getElementById("cifraActions").hidden = !has;
+  document.getElementById("persist").hidden = !has || fromRepo;
   if(has) document.getElementById("cifra").innerHTML = renderCifra(cifraText);
   document.getElementById("cifraBadge").textContent =
-    has ? "" : "— cole a sua do Cifra Club";
+    !has ? "— cole a sua do Cifra Club"
+         : (fromRepo ? "· carregada do repositório" : "· salva só neste navegador");
+}
+
+/* busca cifra.txt no repositório — se existir, ela manda */
+async function loadFromRepo(){
+  try{
+    const r = await fetch("cifra.txt", {cache:"no-cache"});
+    if(!r.ok) return false;
+    const t = await r.text();
+    if(!t.trim() || /^\s*<!DOCTYPE/i.test(t)) return false;
+    cifraText = t; fromRepo = true;
+    return true;
+  }catch(e){ return false; }
 }
 function saveCifra(t){
   cifraText = t;
@@ -482,9 +513,21 @@ document.getElementById("demo").onclick = async ()=>{
     document.getElementById("buildStat").textContent = "o navegador bloqueou; use Ctrl+V na caixa";
   }
 };
+document.getElementById("copy").onclick = async ()=>{
+  const st = document.getElementById("copyStat");
+  try{
+    await navigator.clipboard.writeText(cifraText);
+    st.textContent = "copiado — agora cole no GitHub como cifra.txt";
+  }catch(e){
+    const ta = document.getElementById("raw");
+    ta.value = cifraText; ta.select();
+    st.textContent = "use Ctrl+C (o navegador bloqueou a cópia automática)";
+  }
+  setTimeout(()=>{ st.textContent = ""; }, 6000);
+};
 document.getElementById("edit").onclick = ()=>{
   document.getElementById("raw").value = cifraText;
-  cifraText = ""; showCifra();
+  cifraText = ""; fromRepo = false; showCifra();
 };
 document.getElementById("clear").onclick = ()=>{ saveCifra(""); document.getElementById("raw").value = ""; };
 document.getElementById("dl").onclick = ()=>{
@@ -615,7 +658,7 @@ document.getElementById("raw").addEventListener("paste", ()=>{
 });
 
 /* ================= boot ================= */
-(function boot(){
+(async function boot(){
   try{
     const saved = localStorage.getItem(KEY);
     if(saved) cifraText = saved;
@@ -625,6 +668,8 @@ document.getElementById("raw").addEventListener("paste", ()=>{
   }catch(e){ setView("cifra"); }
   showCifra();
   apply();
+  /* o repositório tem prioridade sobre o que está salvo no navegador */
+  if(await loadFromRepo()){ showCifra(); apply(); }
 })();
 </script>
 </body>
